@@ -339,7 +339,7 @@ model_r2=r2_score(
     y_test,
     model_pred
 )
-#print("Model R²:", model_r2)
+#print("Model R2:", model_r2)
 
 #compare the model with the baseline
 mae_improvement = baseline_mae - model_mae
@@ -347,7 +347,7 @@ mae_improvement = baseline_mae - model_mae
 print("Baseline MAE:", baseline_mae)
 print("Model MAE:", model_mae)
 print("MAE improvement:", mae_improvement)
-print("Model R²:", model_r2)
+print("Model R2:", model_r2)
 
 #==============================================================================
 #chunk --5 ACTUAL vs PREDICT

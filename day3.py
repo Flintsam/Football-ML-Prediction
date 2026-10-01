@@ -1,5 +1,8 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_absolute_error
+from sklearn.linear_model import LinearRegression
+from sklearn.tree import DecisionTreeRegressor
 
 # 1. Load datasets
 
@@ -291,3 +294,116 @@ X_test = pd.concat(
 
 y_train = train_df["GA_per90_25"]
 y_test = test_df["GA_per90_25"]
+
+# Linear Regression model
+lr_model = LinearRegression()
+lr_model.fit(X_train, y_train)
+
+# Predictions
+lr_train_pred = lr_model.predict(X_train)
+lr_test_pred = lr_model.predict(X_test)
+
+# MAE
+lr_train_mae = mean_absolute_error(y_train, lr_train_pred)
+lr_test_mae = mean_absolute_error(y_test, lr_test_pred)
+
+#=================================================================
+#CHUNK --1 LR BASELINE
+#=================================================================
+
+train_pred = lr_model.predict(X_train)
+train_mae = mean_absolute_error(
+    y_train,
+    train_pred
+)
+test_mae = mean_absolute_error(
+    y_test,
+    lr_test_pred
+)
+
+print ("LR Train MAE:",lr_train_mae)
+print("LR Test MAE:", lr_test_mae)
+
+#=================================================================
+#CHUNK --2 UNRESTRICTED DECISION TREE
+#=================================================================
+
+#what is unrestriced decision tree 
+# ml model tht predicts a numerical value by making a sequence of decisions
+#GA_per90_25 is a regressor bcoz output is a number
+
+#tree is much more complex than linear regression model
+
+
+#creating the model
+tree_model = DecisionTreeRegressor(random_state=42)
+#training the model
+tree_model.fit(X_train,y_train)
+
+#asking tree pred for both train and test data
+tree_train_pred = tree_model.predict(X_train)
+tree_test_pred = tree_model.predict(X_test)
+
+#calc MAE for train and test using tree_pred
+tree_train_mae = mean_absolute_error(
+    y_train,
+    tree_train_pred
+)
+
+tree_test_mae = mean_absolute_error(
+    y_test,
+    tree_test_pred
+)
+
+print("Tree Train MAE:", tree_train_mae)
+print("Tree Test MAE:", tree_test_mae)
+
+
+#=================================================================
+#CHUNK --3 CONTROL THE TREE DEPTH
+#=================================================================
+
+#it is bcoz the the tree's pred became very accurate for training_data
+#so it had a huge MAE for test data 
+
+#fixing depth = 3 , 5 , 10 , 7
+tree_depth3_model = DecisionTreeRegressor(
+    max_depth=7,
+    random_state=42
+)
+
+tree_depth3_model.fit(X_train, y_train)
+
+tree_depth3_train_pred = tree_depth3_model.predict(X_train)
+tree_depth3_test_pred = tree_depth3_model.predict(X_test)
+
+tree_depth3_train_mae = mean_absolute_error(
+    y_train,
+    tree_depth3_train_pred
+)
+
+tree_depth3_test_mae = mean_absolute_error(
+    y_test,
+    tree_depth3_test_pred
+)
+
+print("Depth 7 Train MAE:", tree_depth3_train_mae)
+print("Depth 7 Test MAE:", tree_depth3_test_mae)
+
+#with depth 3 the prediction became less flexible 
+#Depth 3 Train MAE: 0.10962872944698711
+#Depth 3 Test MAE: 0.11722586948497851
+
+#with depth 5 we made the tree more complex
+#but the MAE came< then depth3
+#Depth 5 Train MAE: 0.10036743659775267
+#Depth 5 Test MAE: 0.11372132006081798
+
+
+#with depth 10 tree became more complex test mae inc and train mae dec
+#Depth 10 Train MAE: 0.04820542211839741
+#Depth 10 Test MAE: 0.14650006986130384
+
+#with depth = 7
+#Depth 7 Train MAE: 0.08192446494100111
+#Depth 7 Test MAE: 0.1267376952877732
